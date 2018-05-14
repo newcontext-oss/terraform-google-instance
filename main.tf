@@ -12,8 +12,7 @@ resource "google_compute_instance" "database" {
   }
 
   // Local SSD disk
-  scratch_disk {
-  }
+  scratch_disk {}
 
   network_interface {
     network = "default"

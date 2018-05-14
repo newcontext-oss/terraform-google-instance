@@ -1,3 +1,3 @@
 module "terraform-google-instance" {
-   source = "../../.."
+  source = "../../.."
 }
