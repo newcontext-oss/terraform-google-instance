@@ -16,6 +16,7 @@ install:
 - mkdir -p bin; mv terraform bin/
 - export PATH=$PATH:bin
 - tar -zxvf ci.tar.gz
+- yes | ssh-keygen -f ubuntu -N '' >/dev/null
 jobs:
   stages:
   - style check
