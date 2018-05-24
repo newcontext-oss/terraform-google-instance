@@ -1,0 +1,40 @@
+language: ruby
+cache:
+  directories:
+  - vendor/bundle
+  - vendor/cache
+before_install:
+- openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv
+  -in credentials.json.enc -out credentials.json -d
+- openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv
+  -in .env.enc -out .env -d
+- gem update --system
+- gem --version
+- gem install bundler
+- gem update bundler
+install:
+- bin/bundle install --binstubs --jobs=$(nproc --ignore=1) --path=vendor/bundle --retry=3
+- wget https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip
+- unzip terraform_0.11.7_linux_amd64.zip
+- mv terraform /usr/local/bin
+before_cache: bin/bundle clean
+jobs:
+  stages:
+  - style check
+  - integration tests
+  include:
+  - stage: style check
+    script: terraform fmt
+  - stage: integration tests
+    script: source .env; kitchen test
+before_deploy:
+- git config --local user.name "nictrix"
+- git config --local user.email "nickwillever@gmail.com"
+- git tag "$(cat version)"
+deploy:
+  provider: releases
+  api_key:
+    secure: mUg/KgsFw2KbVP5ylNaU2DscYEg32jaXvkqednT8R2lrLSdpy9fJRIIPXPiOydHUMTtUAgCpBCM5vyKGleWmqPGhak0jRv+xYdusU/Wu6SB4NTTpbBVOVuQt93OtKHV/CKnbftHHyeVkhrHTKG1nMlCK45Z+bgcsuualLRNatqrPAa9GNSFeLqFEm97VhtmzCciTnPLzH4bmurlK2eiISuj66/RZHMTiIaGEnd7Br0Z5CEm9CZ54vXzM7k6sEqdGZMSNery4HS2JurRDh6bRPp+xthmO2m/zLuDuqB1KLF4UXmzLEMMpRWca94DZTRe2oZ4hAPk4KJz0ATzgZIAwSq+14lY8IDT7inBfS9xGdXRLvCT0RDmtMPUjgOyAO+4ILsQuxsbad0EcrYVWMxd9FPIBaWPQ2iFBgxIfM7neNK9nYbhGB8aa/532u+mAscd8aW9hUJpSz2+4Amk8VzfgNnH9aXa3wuXPCn7IC5obygpAYe8g9r2WhjV4ypIrkZIXM0RQPv0Z4A88Yx+ts+NfawSkZpVhfh2FgnVUFUwtqu6719hu3CRo2tORoiiH61fFeneIa9U8ryshnq+0qUHkAJGngURWFVW4L9GYBc27MZxD+0T7wqRvJ+HpKLJ1TaWy1oQ5niizA6P3V0PV1Smb6qZs5FVx18f4M3rPtio61Fs=
+  file: "**/*"
+  on:
+    repo: newcontext-oss/terraform-google-instance
