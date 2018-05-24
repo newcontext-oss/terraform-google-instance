@@ -4,10 +4,8 @@ cache:
   - vendor/bundle
   - vendor/cache
 before_install:
-- openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv
-  -in credentials.json.enc -out credentials.json -d
-- openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv
-  -in .env.enc -out .env -d
+- openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv -in credentials.json.enc -out credentials.json -d
+- openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv -in .env.enc -out .env -d
 - gem update --system
 - gem --version
 - gem install bundler
