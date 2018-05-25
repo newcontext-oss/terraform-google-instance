@@ -5,19 +5,17 @@ cache:
   - vendor/cache
   - vendor/bin
   - vendor/google-cloud-sdk
-before_install:
-- openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv -in ci.tar.gz.enc -out ci.tar.gz -d
-- gem update --system
-- gem install bundler
-- bundle install --binstubs --jobs=$(nproc --ignore=1) --path=vendor/bundle --retry=3
 jobs:
   stages:
+  - prepare cache
   - style check & terraform validation
   - integration tests
   - cleanup
   include:
+  - stage: prepare cache
+    script: ./bin/prepare_cache.sh
   - stage: style check & terraform validation
-    script: ./bin/terraform_checks.sh
+    script: export PATH=$PATH:vendor/bin; terraform fmt
   - stage: integration tests
     script: ./bin/kitchen.sh
   - stage: cleanup

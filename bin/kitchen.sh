@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 
+# Decrypt sensitive files
+openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv -in ci.tar.gz.enc -out ci.tar.gz -d
+
 # Decompress sensitive files
 tar -zxf ci.tar.gz
+rm ci.tar.gz
 
 # Add binaries to bin directory
 mkdir -p vendor/bin
 export PATH=$PATH:vendor/bin:vendor/google-cloud-sdk/bin
-
-# Install Terraform
-wget -q https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip
-unzip terraform_0.11.7_linux_amd64.zip
-rm terraform_0.11.7_linux_amd64.zip
-mv terraform vendor/bin/
 
 # Install gcloud command line client
 wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-202.0.0-linux-x86_64.tar.gz
