@@ -13,7 +13,7 @@ jobs:
   - integration tests
   - cleanup
   include:
-    if: tag IS blank
+  - if: tag IS blank
   - stage: prepare cache
     script: ./bin/prepare_cache.sh
   - stage: style check
