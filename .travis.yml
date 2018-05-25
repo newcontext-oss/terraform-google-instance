@@ -6,6 +6,14 @@ cache:
   - vendor/cache
   - vendor/bin
   - vendor/google-cloud-sdk
+before_install:
+- gem update --system
+- gem --version
+- gem install bundler
+- gem update bundler
+install:
+- bundle install --binstubs --jobs=$(nproc --ignore=1) --path=vendor/bundle --retry=3
+before_cache: bundle clean
 jobs:
   stages:
   - prepare cache
