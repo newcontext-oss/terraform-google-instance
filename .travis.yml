@@ -3,6 +3,8 @@ cache:
   directories:
   - vendor/bundle
   - vendor/cache
+  - vendor/bin
+  - vendor/google-cloud-sdk
 before_install:
 - openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv -in ci.tar.gz.enc -out ci.tar.gz -d
 - gem update --system
@@ -19,7 +21,7 @@ jobs:
   - stage: integration tests
     script: ./bin/kitchen.sh
   - stage: cleanup
-    script: rm -Rf credentials.json .env bin/terraform ubuntu*
+    script: rm -Rf credentials.json .env ubuntu*
 before_deploy:
 - git config --local user.name "nictrix"
 - git config --local user.email "nickwillever@gmail.com"
