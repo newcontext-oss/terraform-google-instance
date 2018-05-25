@@ -7,13 +7,13 @@ cache:
   - vendor/google-cloud-sdk
 jobs:
   stages:
-  - prepare cache
+  - name: prepare cache
     if: tag IS blank
-  - style check
+  - name: style check
     if: tag IS blank
-  - integration tests
+  - name: integration tests
     if: tag IS blank
-  - cleanup
+  - name: cleanup
     if: tag IS blank
   include:
   - stage: prepare cache
