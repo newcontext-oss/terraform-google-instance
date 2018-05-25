@@ -10,6 +10,7 @@ rm ci.tar.gz
 # Add binaries to bin directory
 mkdir -p vendor/bin
 export PATH=$PATH:vendor/bin:vendor/google-cloud-sdk/bin
+echo "export PATH=${PATH}" >> ~/.profile
 
 # Install gcloud command line client
 wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-202.0.0-linux-x86_64.tar.gz
@@ -25,4 +26,9 @@ gcloud config set project $(jq -r '.project_id' credentials.json)
 yes | ssh-keygen -f ubuntu -N '' >/dev/null
 
 source .env
-bundle exec kitchen test --destroy always
+bundle exec kitchen converge
+gcloud compute instances list
+gcloud compute instances describe database
+bundle exec kitchen verify
+bundle exec kitchen destroy
+# bundle exec kitchen test --destroy always
