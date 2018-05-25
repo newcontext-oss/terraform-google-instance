@@ -9,29 +9,22 @@ before_install:
 - gem --version
 - gem install bundler
 - gem update bundler
-install:
-- tar -zxvf ci.tar.gz
-- bundle install --binstubs --jobs=$(nproc --ignore=1) --path=vendor/bundle --retry=3
-- mkdir -p bin;
-- export PATH=$PATH:bin:google-cloud-sdk/bin
-- wget https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip
-- unzip terraform_0.11.7_linux_amd64.zip
-- mv terraform bin/
-- wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-202.0.0-linux-x86_64.tar.gz
-- tar -zxvf google-cloud-sdk-*-linux-x86_64.tar.gz
-- ./google-cloud-sdk/install.sh -q
-- gcloud auth activate-service-account --key-file credentials.json
-- gcloud config set project $(jq -r '.project_id' credentials.json)
-- yes | ssh-keygen -f ubuntu -N '' >/dev/null
 jobs:
   stages:
-  - style check
+  - prepare cache
+  - style check & terraform validation
   - integration tests
+  - cleanup
   include:
-  - stage: style check
-    script: terraform fmt
+  - stage: prepare cache
+    script: ./bin/ci.sh
+    rvm: 2.3
+  - stage: style check & terraform validation
+    script: terraform fmt && terraform validate
   - stage: integration tests
-    script: source .env; kitchen test
+    script: source .env; kitchen test --destroy always
+  - stage: cleanup
+    script: rm -Rf credentials.json .env bin/terraform ubuntu*
 before_deploy:
 - git config --local user.name "nictrix"
 - git config --local user.email "nickwillever@gmail.com"
