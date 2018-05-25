@@ -9,13 +9,13 @@ cache:
 jobs:
   stages:
   - prepare cache
-  - style check & terraform validation
+  - style check
   - integration tests
   - cleanup
   include:
   - stage: prepare cache
     script: ./bin/prepare_cache.sh
-  - stage: style check & terraform validation
+  - stage: style check
     script: export PATH=$PATH:vendor/bin; terraform fmt
   - stage: integration tests
     script: ./bin/kitchen.sh
@@ -32,3 +32,5 @@ deploy:
   file: "**/*"
   on:
     repo: newcontext-oss/terraform-google-instance
+    branch: master
+    tags: true
