@@ -6,23 +6,18 @@ cache:
 before_install:
 - openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv -in ci.tar.gz.enc -out ci.tar.gz -d
 - gem update --system
-- gem --version
 - gem install bundler
-- gem update bundler
+- bundle install --binstubs --jobs=$(nproc --ignore=1) --path=vendor/bundle --retry=3
 jobs:
   stages:
-  - prepare cache
   - style check & terraform validation
   - integration tests
   - cleanup
   include:
-  - stage: prepare cache
-    script: ./bin/ci.sh
-    rvm: 2.3
   - stage: style check & terraform validation
-    script: terraform fmt && terraform validate
+    script: ./bin/terraform_checks.sh
   - stage: integration tests
-    script: source .env; kitchen test --destroy always
+    script: ./bin/kitchen.sh
   - stage: cleanup
     script: rm -Rf credentials.json .env bin/terraform ubuntu*
 before_deploy:

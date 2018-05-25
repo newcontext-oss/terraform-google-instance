@@ -3,9 +3,6 @@
 # Decompress sensitive files
 tar -zxf ci.tar.gz
 
-# Install gems for Kitchen-Terraform
-bundle install --binstubs --jobs=$(nproc --ignore=1) --path=vendor/bundle --retry=3
-
 # Add binaries to bin directory
 mkdir -p bin;
 export PATH=$PATH:bin:google-cloud-sdk/bin
@@ -28,3 +25,6 @@ gcloud config set project $(jq -r '.project_id' credentials.json)
 
 # For the tests, create a ephemeral ssh key
 yes | ssh-keygen -f ubuntu -N '' >/dev/null
+
+source .env
+kitchen test --destroy always
