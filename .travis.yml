@@ -20,7 +20,6 @@ install:
 - wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-202.0.0-linux-x86_64.tar.gz
 - tar -zxvf google-cloud-sdk-*-linux-x86_64.tar.gz
 - ./google-cloud-sdk/install.sh -q
-- find / -name gcloud
 - gcloud auth activate-service-account --key-file credentials.json
 - gcloud config set project $(jq -r '.project_id' credentials.json)
 - yes | ssh-keygen -f ubuntu -N '' >/dev/null
