@@ -10,12 +10,19 @@ before_install:
 - gem install bundler
 - gem update bundler
 install:
+- tar -zxvf ci.tar.gz
 - bundle install --binstubs --jobs=$(nproc --ignore=1) --path=vendor/bundle --retry=3
+- mkdir -p bin;
+- export PATH=$PATH:bin:google-cloud-sdk/bin
 - wget https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip
 - unzip terraform_0.11.7_linux_amd64.zip
-- mkdir -p bin; mv terraform bin/
-- export PATH=$PATH:bin
-- tar -zxvf ci.tar.gz
+- mv terraform bin/
+- wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-202.0.0-linux-x86_64.tar.gz
+- tar -zxvf google-cloud-sdk-*-linux-x86_64.tar.gz
+- ./google-cloud-sdk/install.sh -q
+- find / -name gcloud
+- gcloud auth activate-service-account --key-file credentials.json
+- gcloud config set project $(jq -r '.project_id' credentials.json)
 - yes | ssh-keygen -f ubuntu -N '' >/dev/null
 jobs:
   stages:
