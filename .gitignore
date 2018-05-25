@@ -1,0 +1,9 @@
+.terraform
+.kitchen/
+terraform.tfstate.d/
+terraform.tfstate*
+credentials.json
+.env
+ubuntu*
+.vscode
+ci.tar.gz

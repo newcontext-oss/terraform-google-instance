@@ -1,0 +1,20 @@
+---
+driver:
+  name: terraform
+  root_module_directory: test/fixtures/tf_module
+
+provisioner:
+  name: terraform
+
+verifier:
+  name: terraform
+  groups:
+    - name: default
+      controls:
+        - instance
+
+suites:
+  - name: kt_suite
+
+platforms:
+  - name: terraform
