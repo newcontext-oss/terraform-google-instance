@@ -25,4 +25,4 @@ gcloud config set project $(jq -r '.project_id' credentials.json)
 yes | ssh-keygen -f ubuntu -N '' >/dev/null
 
 source .env
-kitchen test --destroy always
+bundle exec kitchen test --destroy always
