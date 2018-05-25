@@ -21,6 +21,7 @@ rm google-cloud-sdk-*-linux-x86_64.tar.gz
 # Authenticate using the credentials.json
 gcloud auth activate-service-account --key-file credentials.json
 gcloud config set project $(jq -r '.project_id' credentials.json)
+gcloud config set compute/zone us-west1-a
 
 # For the tests, create a ephemeral ssh key
 yes | ssh-keygen -f ubuntu -N '' >/dev/null
@@ -29,6 +30,6 @@ source .env
 bundle exec kitchen converge
 gcloud compute instances list
 gcloud compute instances describe database
-bundle exec kitchen verify
+bundle exec kitchen verify --log-level debug
 bundle exec kitchen destroy
 # bundle exec kitchen test --destroy always
