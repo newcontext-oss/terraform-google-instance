@@ -1,18 +1,17 @@
 language: ruby
 cache:
   directories:
-  - vendor/bundle
-  - vendor/cache
-  - vendor/bin
-  - vendor/google-cloud-sdk
+    - vendor/bundle
+    - vendor/cache
+    - vendor/bin
+    - vendor/google-cloud-sdk
 jobs:
   stages:
-  - name: prepare cache
-  - name: style check
-  - name: integration tests
-  - name: tag
+    - name: prepare cache
+    - name: style check
+    - name: integration tests
+    - name: tag
   include:
-    matrix:
     - stage: prepare cache
       script: "./bin/prepare_cache.sh"
     - stage: style check
