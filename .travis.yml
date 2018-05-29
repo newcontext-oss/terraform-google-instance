@@ -1,0 +1,35 @@
+language: ruby
+cache:
+  directories:
+  - vendor/bundle
+  - vendor/cache
+  - vendor/bin
+  - vendor/google-cloud-sdk
+jobs:
+  stages:
+  - name: prepare cache
+  - name: style check
+  - name: integration tests
+  - name: tag
+  include:
+    matrix:
+    - stage: prepare cache
+      script: "./bin/prepare_cache.sh"
+    - stage: style check
+      script: export PATH=$PATH:vendor/bin; terraform fmt
+    - stage: integration tests
+      script: "./bin/kitchen.sh"
+    - stage: tag
+      script: skip
+      before_deploy:
+      - git config --local user.name "nictrix"
+      - git config --local user.email "nickwillever@gmail.com"
+      - git tag "$(cat version)"
+      deploy:
+        provider: releases
+        file: "**/*"
+        api_key:
+          secure: MLo0UalfDOdpd8N4itywjQdO5HovnwiQlsochxsJqZrAMTh/A29VkoppRVgVS/xitr93MJaG2dxO2H7/kStotVZlPYN4nD9SpyUK+BpY1qGmIr4WBbvdO/VDALcC2dnoRlRrRgu2kZqjcfq+N7CvGVCb1/valpg4B61fLIVR0Y8NdZ9B0/zHT+C6fCWz8Qhubo0NW4CnDBUS4oCJkbZ59WPql1y1fRN4mOxP6ViEpMOOnK3kmAKlcxu7EtzyhTuv/BhWwpVyc3CbOs/3FdWONn/g3cgYpW4iwN0CFzHNZRuMLazxL1ROoit/Ba5EXpC+urmiUCWG/6GLQRhxr/pK7RuBnJhEMOJepiOlj3z0mUM8+kY63H3TDCZPEINvYNH7gf431U42bd5NGmp1o/LmULSah5Pz/z3R5ob1zp6XI/9D39R8751Gm1LyPCseMSVsaF2MK2OcVTZjdbuzg18I+AXHo4a7V9bj96OM1iq1swhS80PcsnymvfmtFUIiXyU8aQs7WYwpiH5zb9Te7FO8oo41Q0uazy7oT8cTem0GjTG0zjY9voW/nFNx+eB1hM6pwH4MiAw9bWrxnQO68Qq6uvharInnVh8LGLYN3/gZ/1TPZcWunDZBda6VzxPcQYWg3c9wpINWk906A0VEp9h6OekuWpjKWZ7IhUqeR4SZNrA=
+        on:
+          repo: newcontext-oss/terraform-google-instance
+          branch: master
