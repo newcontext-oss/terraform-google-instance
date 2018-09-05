@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
 # Decrypt sensitive files
+#XXX even encrypted, this is risky IF PRs are allowed to kick off builds
 openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv -in ci.tar.gz.enc -out ci.tar.gz -d
 
 # Decompress sensitive files
 tar -zxf ci.tar.gz
 rm ci.tar.gz
+export GCLOUD_PROJECT=$(jq -r '.project_id' credentials.json)
 
 # Add binaries to bin directory
 mkdir -p vendor/bin
@@ -19,7 +21,7 @@ rm google-cloud-sdk-*-linux-x86_64.tar.gz
 
 # Authenticate using the credentials.json
 gcloud auth activate-service-account --key-file credentials.json
-gcloud config set project $(jq -r '.project_id' credentials.json)
+gcloud config set project ${GCLOUD_PROJECT}
 gcloud config set compute/zone us-west1-a
 
 yes | ssh-keygen -f ubuntu -N '' >/dev/null
