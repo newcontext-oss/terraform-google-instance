@@ -8,6 +8,7 @@ openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_i
 tar -zxf ci.tar.gz
 rm ci.tar.gz
 export GCLOUD_PROJECT=$(jq -r '.project_id' credentials.json)
+export TF_VAR_gcloud_project=$GCLOUD_PROJECT
 
 # Add binaries to bin directory
 mkdir -p vendor/bin

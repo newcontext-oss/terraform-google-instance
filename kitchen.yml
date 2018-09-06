@@ -2,17 +2,15 @@
 driver:
   name: terraform
   root_module_directory: test/fixtures/tf_module
-  variables:
-    gcloud_project: <%= ENV['GCLOUD_PROJECT'] %>
 
 provisioner:
   name: terraform
 
 verifier:
   name: terraform
+  format: documentation
   systems:
-    -
-      name: default
+    - name: default
       backend: gcp
       controls:
         - instance
@@ -21,5 +19,4 @@ platforms:
   - name: gcp
 
 suites:
-  -
-    name: kt_suite
+  - name: kt_suite
