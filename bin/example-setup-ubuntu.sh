@@ -6,8 +6,9 @@
 
 # Modify these to your liking
 TF_BIN_LOCATION=/usr/local/bin
-GCLOUD_REGION="us-central1"
+GCLOUD_REGION="us-west1"
 GCLOUD_ZONE="${GCLOUD_REGION}a"
+GOOGLE_CREDS="$(pwd)/credentials.json"
 
 UBUN_VERSION=$(grep '^VERSION=' /etc/os-release|  \
      sed -E 's/VERSION="([0-9][0-9]*\.[0-9][0-9]*).*".*$/\1/')
@@ -53,11 +54,11 @@ cd terraform-google-instance
 echo "Now go to the Google IAM Console and retrieve the credentials"
 echo "of a service account which can create Google cloud instances."
 echo "Save the credentials (as JSON) in:"
-echo "  $(pwd)/credentials.json"
+echo "  $GOOGLE_CREDS"
 
 initial=1
 seconds=0
-while [ ! -f credentials.json ];do
+while [ ! -f "$GOOGLE_CREDS" ];do
     if [ $initial -eq 1 ]; then
         initial=0
     else
@@ -66,17 +67,20 @@ while [ ! -f credentials.json ];do
     (( seconds += 10 ))
 done
 
-gcloud auth activate-service-account --key-file credentials.json
-gcloud config set project $(jq -r '.project_id' credentials.json)
+
+gcloud_project=$(jq -r '.project_id' $GOOGLE_CREDS)
+gcloud auth activate-service-account --key-file $GOOGLE_CREDS
+gcloud config set project $gcloud_project
 gcloud config set compute/zone $GCLOUD_ZONE
 
 cat > .env <<HEREDOC
+export GOOGLE_APPLICATION_CREDENTIALS="'$GOOGLE_CREDS'"
+export GCLOUD_PROJECT="'$gcloud_project'"
+export GCLOUD_REGION="'$GCLOUD_REGION'"
 my_public_ip=\$(dig +short myip.opendns.com @resolver1.opendns.com)
 export TF_VAR_engineer_cidrs="[\"\$my_public_ip/32\"]"
-export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/credentials.json"
-export GCLOUD_PROJECT=$(jq -r '.project_id' $GOOGLE_APPLICATION_CREDENTIALS)
-export GCLOUD_REGION="$GCLOUD_REGION"
 export TF_VAR_gcloud_project=$GCLOUD_PROJECT
+export TF_VAR_ssh_key="$(pwd)/ubuntu.pub"
 HEREDOC
 
 yes | ssh-keygen -f ubuntu -N '' >/dev/null

@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 gcloud_project = attribute('gcloud_project', 
-  description="The name of the project where resources are deployed. " + 
-  "This should be passed to Terraform via environment variable")
+  { description: "The name of the project where resources are deployed. This should be passed to Terraform via environment variable" })
 
 control "instance" do
   describe google_compute_instance(project: "#{gcloud_project}",  zone: 'us-west1-a', name: 'database') do

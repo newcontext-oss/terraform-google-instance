@@ -60,7 +60,7 @@ gcloud config set project $(jq -r '.project_id' credentials.json)
 gcloud config set compute/zone us-west1-a
 ```
 
-### Install Kitchen-Terraform
+### Install Kitchen-Terraform and many other required Ruby Gems. 
 
 ```sh
 gem install bundler --no-rdoc --no-ri
@@ -80,17 +80,23 @@ export GCLOUD_REGION="us-west1"
 export TF_VAR_gcloud_project=$GCLOUD_PROJECT
 my_public_ip=\$(dig +short myip.opendns.com @resolver1.opendns.com)
 export TF_VAR_engineer_cidrs="[\"\$my_public_ip/32\"]"
+export TF_VAR_ssh_key="$(pwd)/ubuntu.pub"
 HEREDOC
 
 ```
 
 ### Run Terraform and Tests
 
-To run Terraform via Test-Kitchen:
+Common setup to be run once before any number of the rest of the following:
 
 ```sh
 source .env
 yes | ssh-keygen -f ubuntu -N '' >/dev/null
+```
+
+To run Terraform via Test-Kitchen:
+
+```sh
 bundle exec kitchen converge
 ```
 
@@ -100,7 +106,6 @@ Test-Kitchen will run the module code that is called via this file:
 To run InSpec via Test-Kitchen:
 
 ```sh
-source .env
 bundle exec kitchen verify
 ```
 
@@ -110,7 +115,6 @@ Test-Kitchen will run the InSpec controls via this file:
 To destroy everything via Test-Kitchen:
 
 ```sh
-source .env
 bundle exec kitchen destroy
 ```
 
