@@ -1,5 +1,5 @@
 variable "gcloud_project" {
-  description = "The name of the GCP project to deploy against."
+  description = "The name of the GCP project to deploy against. Set this using TF_VARS_gcloud_project environment variable"
 }
 
 module "terraform-google-instance" {

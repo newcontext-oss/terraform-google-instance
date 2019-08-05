@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source .env
+
 # Decrypt sensitive files
 #XXX even encrypted, this is risky IF PRs are allowed to kick off builds
 openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv -in ci.tar.gz.enc -out ci.tar.gz -d
@@ -7,8 +9,8 @@ openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_i
 # Decompress sensitive files
 tar -zxf ci.tar.gz
 rm ci.tar.gz
-export GCLOUD_PROJECT=$(jq -r '.project_id' credentials.json)
-export TF_VAR_gcloud_project=$GCLOUD_PROJECT
+#export GCLOUD_PROJECT=$(jq -r '.project_id' credentials.json)
+#export TF_VAR_gcloud_project=$GCLOUD_PROJECT
 
 # Add binaries to bin directory
 mkdir -p vendor/bin
@@ -27,7 +29,6 @@ gcloud config set compute/zone us-west1-a
 
 yes | ssh-keygen -f ubuntu -N '' >/dev/null
 
-source .env
 bundle exec kitchen test --destroy always
 KITCHEN_EXIT_CODE=$?
 

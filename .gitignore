@@ -7,3 +7,5 @@ credentials.json
 ubuntu*
 .vscode
 ci.tar.gz
+vendor
+.bundle

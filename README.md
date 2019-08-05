@@ -73,10 +73,15 @@ Create a file in the repository directory called: `.env`
 It will have environment variables that Terraform uses to run.
 
 ```sh
-export TF_VAR_engineer_cidrs="[\"$(dig +short myip.opendns.com @resolver1.opendns.com)/32\"]"
-export GOOGLE_APPLICATION_CREDENTIALS="credentials.json"
+cat > .env <<HEREDOC
+export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/credentials.json"
 export GCLOUD_PROJECT=$(jq -r '.project_id' $GOOGLE_APPLICATION_CREDENTIALS)
 export GCLOUD_REGION="us-west1"
+export TF_VAR_gcloud_project=$GCLOUD_PROJECT
+my_public_ip=\$(dig +short myip.opendns.com @resolver1.opendns.com)
+export TF_VAR_engineer_cidrs="[\"\$my_public_ip/32\"]"
+HEREDOC
+
 ```
 
 ### Run Terraform and Tests
