@@ -30,8 +30,10 @@ gcloud config set compute/zone us-west1-a
 yes | ssh-keygen -f ubuntu -N '' >/dev/null
 
 # apt-get install --reinstall -y ruby-bundler
+ls -l /usr/bin/bun*
 gem install bundler
-
+type bundle
+ls -l /usr/bin/bun*
 bundle exec kitchen test --destroy always
 KITCHEN_EXIT_CODE=$?
 
