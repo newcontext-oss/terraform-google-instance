@@ -1,11 +1,10 @@
-
 variable "gcloud_project" {
-  type = "string"
+  # type = "string"
   description = "The name of the GCP project to deploy against. Set this using TF_VAR_gcloud_project environment variable"
 }
 
 variable "ssh_key" {
-  type = "string"
+  # type = "string"
   description = "The path to the public key to use to access the Google instance. Set this using TF_VAR_ssh_key environment variable."
 }
 
