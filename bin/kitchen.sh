@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source .env
-
 # Decrypt sensitive files
 #XXX even encrypted, this is risky IF PRs are allowed to kick off builds
 openssl aes-256-cbc -K $encrypted_cfdeb2eb7efd_key -iv $encrypted_cfdeb2eb7efd_iv -in ci.tar.gz.enc -out ci.tar.gz -d
@@ -23,20 +21,20 @@ rm google-cloud-sdk-*-linux-x86_64.tar.gz
 ./vendor/google-cloud-sdk/install.sh -q
 
 # Authenticate using the credentials.json
-gcloud auth activate-service-account --key-file credentials.json
-gcloud config set project ${GCLOUD_PROJECT}
+export GOOGLE_APPLICATION_CREDENTIALS="$PWD/credentials.json"
+gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
+gcloud config set project "$GCLOUD_PROJECT"
 gcloud config set compute/zone us-west1-a
+
+source .env
 
 yes | ssh-keygen -f ubuntu -N '' >/dev/null
 
-function findcommandall () {
-  for dir in $(echo $PATH|tr ':' ' '); do
-    [ -f "$dir/$1" ] && echo "$dir/$1"
-  done
-}
-findcommandall bundle
-findcommandall bundler
-ls -l /home/travis/.rvm/rubies/ruby-2.5.5/bin/bundle
+my_public_ip=\$(dig +short myip.opendns.com @resolver1.opendns.com)
+export TF_VAR_engineer_cidrs="[\"$my_public_ip/32\"]"
+export TF_VAR_gcloud_project="$GCLOUD_PROJECT"
+export TF_VAR_ssh_key="$(pwd)/ubuntu.pub"
+
 
 bundle exec kitchen test --destroy always
 KITCHEN_EXIT_CODE=$?
