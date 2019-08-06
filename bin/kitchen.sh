@@ -29,11 +29,15 @@ gcloud config set compute/zone us-west1-a
 
 yes | ssh-keygen -f ubuntu -N '' >/dev/null
 
-# apt-get install --reinstall -y ruby-bundler
-ls -l /usr/bin/bun*
-gem install bundler
-type bundle
-ls -l /usr/bin/bun*
+function findcommandall () {
+  for dir in $(echo $PATH|tr ':' ' '); do
+    [ -f "$dir/$1" ] && echo "$dir/$1"
+  done
+}
+findcommandall bundle
+findcommandall bundler
+ls -l /home/travis/.rvm/rubies/ruby-2.5.5/bin/bundle
+
 bundle exec kitchen test --destroy always
 KITCHEN_EXIT_CODE=$?
 
