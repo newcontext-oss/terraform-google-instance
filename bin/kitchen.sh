@@ -30,7 +30,7 @@ source .env
 
 yes | ssh-keygen -f ubuntu -N '' >/dev/null
 
-my_public_ip=\$(dig +short myip.opendns.com @resolver1.opendns.com)
+my_public_ip=$(dig +short myip.opendns.com @resolver1.opendns.com)
 export TF_VAR_engineer_cidrs="[\"$my_public_ip/32\"]"
 export TF_VAR_gcloud_project="$GCLOUD_PROJECT"
 export TF_VAR_ssh_key="$(pwd)/ubuntu.pub"
