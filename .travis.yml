@@ -1,10 +1,16 @@
 language: ruby
+rvm:
+  - 2.5
 cache:
   directories:
     - vendor/bundle
     - vendor/cache
     - vendor/bin
     - vendor/google-cloud-sdk
+before_install:
+  - gem update --system
+  - gem install bundler
+  - bundle --full-index
 jobs:
   stages:
     - name: prepare cache

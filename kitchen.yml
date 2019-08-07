@@ -8,13 +8,15 @@ provisioner:
 
 verifier:
   name: terraform
-  groups:
+  format: documentation
+  systems:
     - name: default
+      backend: gcp
       controls:
         - instance
 
+platforms:
+  - name: gcp
+
 suites:
   - name: kt_suite
-
-platforms:
-  - name: terraform

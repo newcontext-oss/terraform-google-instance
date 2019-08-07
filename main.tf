@@ -22,7 +22,11 @@ resource "google_compute_instance" "database" {
     }
   }
 
-  metadata {
+
+  # uncomment this next code line and comment the following to enable Terraform 0.12+ functionality
+  metadata = {
+  # metadata {
     sshKeys = "ubuntu:${file(var.ssh_public_key_filepath)}"
   }
+
 }
