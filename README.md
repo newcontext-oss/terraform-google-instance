@@ -133,6 +133,7 @@ Here are **some** of the things necessary to migrate.
    - gem 'inspec', '~> 4.0'
    - gem 'kitchen-terraform', '>= 4.0.0'
 1. Edit main.tf to change syntax of metadata, at the bottom. See the comment.
+1. Testing (verify stage) does not pass - there seem to be problems with the inspec plugins. 
 
 ## Authors
 
