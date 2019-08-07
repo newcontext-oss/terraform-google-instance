@@ -1,4 +1,4 @@
-.terraform
+.terraform/
 .kitchen/
 terraform.tfstate.d/
 terraform.tfstate*
@@ -7,5 +7,5 @@ credentials.json
 ubuntu*
 .vscode
 ci.tar.gz
-vendor
+vendor/
 .bundle
