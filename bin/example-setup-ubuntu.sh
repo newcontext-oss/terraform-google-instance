@@ -7,7 +7,7 @@
 # Modify these to your liking
 TF_BIN_LOCATION=/usr/local/bin
 GCLOUD_REGION="us-west1"
-GCLOUD_ZONE="${GCLOUD_REGION}a"
+GCLOUD_ZONE="${GCLOUD_REGION}-a"
 GOOGLE_CREDS="$(pwd)/credentials.json"
 
 UBUN_VERSION=$(grep '^VERSION=' /etc/os-release|  \
